@@ -104,6 +104,13 @@ Every model's metrics, sample sizes, caveats, and how to update the picks for a 
 
    A reading you favour against both blind readers is at most possible until the researcher has seen the crop. A conclusion is never stronger than its weakest decisive reading.
 
+### Reading whole books (bulk pipeline; measured on Białystok registers 1906–42, Oct 2026)
+- **Keep claude-opus+tools for bulk reading.** Its ≈74k tokens per page are mostly cache reads: ≈$0.25 per page equivalent, 40–80 s. Tiles cut by code and read look-only cost more (4 tiles ≈$0.36 per page, and the lower tiles lose the page header, and with it the dates); 2 halves cost ≈$0.18 per page but misread names that opus+tools got right.
+- **Throughput is limited by the plan's 5-hour window and by the network, not by the CLI.** 10 parallel readers ≈ 470 pages/h; 16 readers once filled the 5-hour window. Prefetch upcoming scans from cloud storage in the background, and stop the batch at a weekly-usage threshold.
+- **Tools-mode logs are heavy**: each stdout embeds every crop the reader viewed as base64 (~4 MB per page), plus a work folder of crops (~3 MB per page). Compress the logs with xz (≈40%); the crops are scratch and can be dropped; keep both out of backups.
+- **A symlinked scan must keep its link name as the page id** (`Path.absolute()`, not `resolve()`), or results land under the target's file name and a pipeline that checks for finished pages re-reads them forever.
+- **Blind readers still miss decisive short words**: "ur. w Gródku" (born in Gródek) was read as "w Grodnie" (Grodno) by opus+tools and on a first look. Zoom every birthplace, maiden name and parent name that will drive a search, even on a page the readers agree on.
+
 ## Reading the handwriting
 - **German Kurrent** (Galicia until ~1890s, mixed with Latin script): `e` looks like `n`; long `ſ` looks like `f`; `h` has a loop below the line; `ü/ö` umlaut is a breve or two strokes. Names are usually in **Latin script** even within a Kurrent text — use that switch to spot names.
 - **Polish interwar** (1918–39), Latin script: watch `ł`, `ż/ź`, and the written-out ordinal dates (`dziewiątego czerwca` = 9 June).

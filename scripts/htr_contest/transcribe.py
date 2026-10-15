@@ -59,7 +59,7 @@ def main():
     roster = {c.name: c for c in CONTESTANTS}
     if args.reader not in roster:
         sys.exit(f"unknown reader {args.reader!r}; valid: {', '.join(roster)}")
-    pages = [Path(p).resolve() for p in args.pages]
+    pages = [Path(p).absolute() for p in args.pages]  # absolute, not resolve: a scan may be a symlink into cloud storage, and the page id is the link name
     missing = [str(p) for p in pages if not p.is_file()]
     if missing:
         sys.exit(f"missing pages: {missing}")
